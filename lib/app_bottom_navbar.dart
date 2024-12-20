@@ -14,11 +14,20 @@ class AppBottomNavbar extends StatefulWidget {
 
 class _AppBottomNavbarState extends State<AppBottomNavbar> {
   int _selectedIndex = 0;
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const EyeDropsListScreen(),
-    const SettingsScreen(),
-  ];
+
+  // Function to build the selected screen dynamically
+  Widget _getScreen(int index) {
+    switch (index) {
+      case 0:
+        return const HomeScreen();
+      case 1:
+        return const EyeDropsListScreen();
+      case 2:
+        return const SettingsScreen();
+      default:
+        return const HomeScreen();
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,10 +38,7 @@ class _AppBottomNavbarState extends State<AppBottomNavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
-      ),
+      body: _getScreen(_selectedIndex), // Call the selected screen directly
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
@@ -50,7 +56,7 @@ class _AppBottomNavbarState extends State<AppBottomNavbar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'settings',
+            label: 'Settings',
           ),
         ],
       ),

@@ -15,20 +15,23 @@ class ScheduleCubit extends Cubit<ScheduleState> {
   onUpdateSchedule() {
     // emit(state.resetSchedule());
 
-    if (state.startingTime.isNotNull &&
-        state.endingTime.isNotNull &&
-        state.eyeDropsList.isNotNullOrEmpty) {
-      BillScheduler billScheduler = BillScheduler(
-        numberOfDrops: state.eyeDropsList!
-            .fold(0, (total, bill) => total + bill.repetitions),
-        startingTime: state.startingTime!,
-        endingTime: state.endingTime!,
-      );
-      List<TimeOfDay> timingList = billScheduler.generateTimingList();
-      ScheduleModel schedule =
-          ScheduleModel.generate(timingList, state.eyeDropsList!);
+    if (state.scheduleIsValid) {
+      ScheduleModel schedule = generateNewSchedule();
       emit(state.updateSchedule(schedule));
     }
+  }
+
+  ScheduleModel generateNewSchedule() {
+    BillScheduler billScheduler = BillScheduler(
+      numberOfDrops: state.eyeDropsList!
+          .fold(0, (total, bill) => total + bill.repetitions),
+      startingTime: state.startingTime!,
+      endingTime: state.endingTime!,
+    );
+    List<TimeOfDay> timingList = billScheduler.generateTimingList();
+    ScheduleModel schedule =
+        ScheduleModel.generate(timingList, state.eyeDropsList!);
+    return schedule;
   }
 
   void onUpdateValue({

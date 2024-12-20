@@ -11,26 +11,27 @@ class ScheduleListeners extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
-      listeners: const [
-        // BlocListener<EyeDropsCubit, EyeDropsState>(
-        //   listener: (context, state) {
-        //     context.read<ScheduleCubit>().onUpdateValue(
-        //           eyeDropsList: state.eyeDropsListModel.items,
-        //         );
-        //     context.read<ScheduleCubit>().onUpdateSchedule();
-        //   },
-        //   child: child,
-        // ),
-        // BlocListener<SettingsCubit, SettingsState>(
-        //   listener: (context, state) {
-        //     context.read<ScheduleCubit>().onUpdateValue(
-        //           startingTime: state.startingTime,
-        //           endingTime: state.endingTime,
-        //         );
-        //     context.read<ScheduleCubit>().onUpdateSchedule();
-        //   },
-        //   child: child,
-        // ),
+      listeners: [
+        BlocListener<EyeDropsCubit, EyeDropsState>(
+          listener: (context, state) {
+            print('eye_drop_cubit > eye drop listens');
+            context.read<ScheduleCubit>().onUpdateValue(
+                  eyeDropsList: state.eyeDropsListModel.items,
+                );
+            context.read<ScheduleCubit>().onUpdateSchedule();
+          },
+          child: child,
+        ),
+        BlocListener<SettingsCubit, SettingsState>(
+          listener: (context, state) {
+            context.read<ScheduleCubit>().onUpdateValue(
+                  startingTime: state.startingTime,
+                  endingTime: state.endingTime,
+                );
+            context.read<ScheduleCubit>().onUpdateSchedule();
+          },
+          child: child,
+        ),
       ],
       child: child,
     );

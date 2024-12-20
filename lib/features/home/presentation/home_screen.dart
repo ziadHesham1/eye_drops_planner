@@ -23,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // onScheduleRefresh();
+    print('HomeScreen initState');
+    onScheduleRefresh();
   }
 
   void onScheduleRefresh() {
@@ -40,49 +41,54 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    print('didChangeDependencies');
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScheduleListeners(
-        child: SafeArea(
-          child: BlocBuilder<ScheduleCubit, ScheduleState>(
-              builder: (context, state) {
-            ScheduleModel schedule = ScheduleModel.empty();
-            if (state.schedule.isNotNullOrEmpty) {
-              schedule = state.schedule!;
-            }
-            return Column(
-              children: [
-                // Text(schedule.items.length.toString()),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: HomeDatePickerWidget(
-                    onDateSelected: (selectedDate) {},
-                  ),
+      body: SafeArea(
+        child: BlocBuilder<ScheduleCubit, ScheduleState>(
+            builder: (context, state) {
+          ScheduleModel schedule = ScheduleModel.empty();
+          if (state.schedule.isNotNullOrEmpty) {
+            schedule = state.schedule!;
+          }
+          return Column(
+            children: [
+              // Text(schedule.items.length.toString()),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: HomeDatePickerWidget(
+                  onDateSelected: (selectedDate) {},
                 ),
-                Expanded(
-                  child: ListView(
-                    children: schedule.items.asMap().entries.map(
-                      (entry) {
-                        int i = entry.key;
-                        return ScheduleStepWidget(
-                          status: entry.value.status,
-                          title: entry.value.time.to12HourString,
-                          content: HomeScheduleItemWidget(
-                            scheduleItem: entry.value,
-                            color: entry.value.eyeDrop.color,
-                          ),
-                          isFirst: i == 0,
-                          isLast: i == schedule.items.length - 1,
-                          indicatorColor: entry.value.eyeDrop.color,
-                        );
-                      },
-                    ).toList(),
-                  ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: schedule.items.asMap().entries.map(
+                    (entry) {
+                      int i = entry.key;
+                      return ScheduleStepWidget(
+                        status: entry.value.status,
+                        title: entry.value.time.to12HourString,
+                        content: HomeScheduleItemWidget(
+                          scheduleItem: entry.value,
+                          color: entry.value.eyeDrop.color,
+                        ),
+                        isFirst: i == 0,
+                        isLast: i == schedule.items.length - 1,
+                        indicatorColor: entry.value.eyeDrop.color,
+                      );
+                    },
+                  ).toList(),
                 ),
-              ],
-            );
-          }),
-        ),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }

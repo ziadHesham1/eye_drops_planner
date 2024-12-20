@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +58,22 @@ class ScheduleModel extends Equatable {
   }) {
     return ScheduleModel(
       items: items ?? this.items,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'items': items.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory ScheduleModel.fromMap(Map<String, dynamic> map) {
+    return ScheduleModel(
+      items: List<ScheduleItemModel>.from(
+        (map['items'] as List<int>).map<ScheduleItemModel>(
+          (x) => ScheduleItemModel.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 }

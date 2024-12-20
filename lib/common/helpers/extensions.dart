@@ -1,6 +1,7 @@
-import 'package:bill_planner/common/models/schedule_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../models/schedule_model.dart';
 
 extension DateTimeExtension on DateTime {
   TimeOfDay get toTimeOfDay {
@@ -33,6 +34,22 @@ extension NullableTimeOfDayExtension on TimeOfDay? {
 }
 
 extension TimeOfDayExtension on TimeOfDay {
+  // Function to convert TimeOfDay to a Map
+  Map<String, int> toMap() {
+    return {
+      'hour': hour,
+      'minute': minute,
+    };
+  }
+
+// Function to convert Map to TimeOfDay
+  static TimeOfDay fromMap(Map<String, int> timeMap) {
+    return TimeOfDay(
+      hour: timeMap['hour'] ?? 0,
+      minute: timeMap['minute'] ?? 0,
+    );
+  }
+
   String get to24HourString {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }

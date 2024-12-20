@@ -36,6 +36,15 @@ class EyeDropsCubit extends HydratedCubit<EyeDropsState> {
         ));
   }
 
+  Stream<EyeDropsListModel> scheduleStream() {
+    return stream.map((state) {
+      if (state.status == CubitStatus.success) {
+        return state.eyeDropsListModel;
+      }
+      return EyeDropsListModel.empty();
+    });
+  }
+
   onCreateNewEyeDrop() {
     emit(state.loading());
     EyeDropModel newItem = _newEyeDropModel.copy();

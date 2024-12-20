@@ -27,6 +27,10 @@ class ScheduleState extends Equatable {
     return copyWith(schedule: schedule);
   }
 
+  bool get scheduleIsValid =>
+      startingTime.isNotNull &&
+      endingTime.isNotNull &&
+      eyeDropsList.isNotNullOrEmpty;
   ScheduleState copyWith({
     List<EyeDropModel>? eyeDropsList,
     TimeOfDay? startingTime,

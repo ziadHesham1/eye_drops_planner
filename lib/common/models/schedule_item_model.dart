@@ -1,11 +1,30 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:bill_planner/common/helpers/extensions.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
+import 'package:bill_planner/common/helpers/extensions.dart';
 
 import '../../features/new_eye_drop/data/models/eye_drop_model.dart';
 
 enum ScheduleItemStatus { normal, taken, missed }
+
+extension ScheduleItemStatusExtension on ScheduleItemStatus {
+  // Convert ScheduleItemStatus to a Map
+  Map<String, String> toMap() {
+    return {
+      'status': toString().split('.').last,
+    };
+  }
+
+  // Convert a Map to ScheduleItemStatus
+  static ScheduleItemStatus fromMap(Map<String, String> statusMap) {
+    return ScheduleItemStatus.values.firstWhere(
+      (status) => status.toString().split('.').last == statusMap['status'],
+      orElse: () => ScheduleItemStatus.normal, // Default value
+    );
+  }
+}
 
 class ScheduleItemModel extends Equatable {
   final int index;
@@ -63,6 +82,27 @@ class ScheduleItemModel extends Equatable {
       time: time ?? this.time,
       status: status ?? this.status,
       taken: taken ?? this.taken,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'index': index,
+      'eyeDrop': eyeDrop.toMap(),
+      'time': time.toMap(),
+      'status': status.toMap,
+      'taken': taken,
+    };
+  }
+
+  factory ScheduleItemModel.fromMap(Map<String, dynamic> map) {
+    return ScheduleItemModel(
+      index: map['index'] as int,
+      eyeDrop: EyeDropModel.fromMap(map['eyeDrop'] as Map<String, dynamic>),
+      time: TimeOfDayExtension.fromMap(map['time'] as Map<String, int>),
+      status: ScheduleItemStatusExtension.fromMap(
+          map['status'] as Map<String, String>),
+      taken: map['taken'] as bool,
     );
   }
 }

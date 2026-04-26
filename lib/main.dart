@@ -1,5 +1,8 @@
 import 'package:bill_planner/app_bottom_navbar.dart';
+import 'package:bill_planner/common/services/notifications_service.dart';
+import 'package:bill_planner/features/home/logic/dose_log_cubit.dart';
 import 'package:bill_planner/features/home/logic/schedule_cubit.dart';
+import 'package:bill_planner/features/home/presentation/widgets/schedule_listeners.dart';
 import 'package:bill_planner/features/new_eye_drop/logic/eye_drop_cubit.dart';
 import 'package:bill_planner/features/settings/logic/settings_cubit.dart';
 import 'package:flutter/foundation.dart';
@@ -7,9 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'common/app_colors.dart';
-import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +23,8 @@ Future<void> main() async {
         ? HydratedStorage.webStorageDirectory
         : await getApplicationDocumentsDirectory(),
   );
+  await NotificationsService.instance.init();
+
   runApp(const MyApp());
 }
 
@@ -30,39 +35,35 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ScheduleCubit(),
-        ),
-        BlocProvider(
-          create: (context) => EyeDropsCubit(),
-        ),
-        BlocProvider(
-          create: (context) => SettingsCubit(),
-        ),
+        BlocProvider(create: (_) => SettingsCubit()),
+        BlocProvider(create: (_) => EyeDropsCubit()),
+        BlocProvider(create: (_) => DoseLogCubit()),
+        BlocProvider(create: (_) => ScheduleCubit()),
       ],
       child: ScreenUtilInit(
-          designSize: const Size(375, 812),
-          minTextAdapt: true,
-          splitScreenMode: true,
-          builder: (_, child) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Flutter Demo',
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSwatch().copyWith(
-                  secondary: AppColors.secondary,
-                  primary: AppColors.primary,
-                ),
-                scaffoldBackgroundColor: AppColors.white,
-                appBarTheme: const AppBarTheme(
-                  backgroundColor: AppColors.white,
-                  surfaceTintColor: AppColors.white,
-                ),
-                useMaterial3: true,
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (_, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Eye Drops Planner',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                secondary: AppColors.secondary,
+                primary: AppColors.primary,
               ),
-              home: const AppBottomNavbar(),
-            );
-          }),
+              scaffoldBackgroundColor: AppColors.white,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: AppColors.white,
+                surfaceTintColor: AppColors.white,
+              ),
+              useMaterial3: true,
+            ),
+            home: const ScheduleListeners(child: AppBottomNavbar()),
+          );
+        },
+      ),
     );
   }
 }

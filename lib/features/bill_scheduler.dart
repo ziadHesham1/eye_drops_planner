@@ -7,47 +7,57 @@ class BillScheduler {
   final TimeOfDay startingTime;
   final TimeOfDay endingTime;
 
-  final double minInterval;
+  /// Minimum minutes between two adjacent scheduled events (across drugs).
+  /// Applied as a post-pass after even spacing.
+  final int minGapMinutes;
 
   BillScheduler({
     required this.numberOfDrops,
     required this.startingTime,
     required this.endingTime,
-    this.minInterval = 0.5,
+    this.minGapMinutes = 6,
   });
 
   List<TimeOfDay> generateTimingList() {
-    var hoursNumber = endingTime.difference(startingTime).inHours;
-    double interval = (hoursNumber / numberOfDrops);
-//
-    // interval = adjustInterval(interval);
-    List<TimeOfDay> list = [];
-    for (int i = 0; i < numberOfDrops; i++) {
-      var time = startingTime.addHours(i * interval);
-      list.add(time);
+    if (numberOfDrops <= 0) return const [];
+
+    final windowMinutes = endingTime.difference(startingTime).inMinutes;
+    if (windowMinutes <= 0) {
+      // Degenerate window: stack everything at start.
+      return List.filled(numberOfDrops, startingTime);
     }
-    return list;
+
+    final intervalMin = windowMinutes / numberOfDrops;
+
+    // Even spacing first.
+    final base = DateTime(2000, 1, 1, startingTime.hour, startingTime.minute);
+    final slots = <DateTime>[
+      for (int i = 0; i < numberOfDrops; i++)
+        base.add(Duration(milliseconds: (i * intervalMin * 60000).round())),
+    ];
+
+    _enforceMinGap(slots);
+
+    // Clamp to within-day if a tight window pushed slots past midnight.
+    final dayEnd = DateTime(2000, 1, 1, 23, 59);
+    return slots.map((dt) {
+      final t = dt.isAfter(dayEnd) ? dayEnd : dt;
+      return TimeOfDay(hour: t.hour, minute: t.minute);
+    }).toList();
   }
 
-  double adjustInterval(double interval) {
-    // Check if the interval is less than the minimum allowed interval (0.5 hours).
-    if (interval < minInterval) {
-      // If true, return the minimum interval (0.5 hours).
-      return minInterval;
-    }
-    // Check if the interval is less than 1 hour but greater than or equal to the minimum interval.
-    else if (interval < 1) {
-      // If the interval is 0.8 hours or more, round it up to 1.0 hour.
-      // Otherwise, set the interval to the minimum interval (0.5 hours).
-      return (interval >= 0.8) ? 1.0 : minInterval;
-    }
-    // If the interval is 1 hour or more, floor it to the nearest whole number.
-    return interval.floorToDouble();
-  }
+  /// Ensures every adjacent pair is at least [minGapMinutes] apart. When
+  /// the window is too tight, slots spill past the original end rather than
+  /// stack — keeping ordering and the cross-drug gap intact.
+  void _enforceMinGap(List<DateTime> slots) {
+    if (slots.length < 2) return;
+    final gap = Duration(minutes: minGapMinutes);
 
-  TimeOfDay doubleToTime(double number) {
-    int hour = number.toInt();
-    int minutes = ((number - hour) * 60).toInt();
-    return TimeOfDay(hour: hour, minute: minutes);
+    for (int i = 1; i < slots.length; i++) {
+      final earliest = slots[i - 1].add(gap);
+      if (slots[i].isBefore(earliest)) {
+        slots[i] = earliest;
+      }
+    }
   }
 }

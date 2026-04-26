@@ -17,80 +17,78 @@ class EyeDropItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 8.h,
-          horizontal: 8.w,
-        ),
-        margin: EdgeInsets.symmetric(horizontal: 12.w),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-        ),
-        height: 100.h,
-        child: Row(
-          children: [
-            Container(
-              width: 60.w,
-              decoration: BoxDecoration(
-                color: eyeDrop.color,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20.r),
-                ),
-              ),
-              child: Container(
-                alignment: Alignment.center,
-                child: SvgPicture.asset(
-                  eyeDrop.isActive
-                      ? AppAssets.waterDropSvg
-                      : AppAssets.pauseSvg,
-                  height: 35.h,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(width: 20.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    eyeDrop.name,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        eyeDrop.treatmentDuration.duration == null
-                            ? 'Outgoing Treatment'
-                            : 'Duration: ${eyeDrop.treatmentDuration.duration?.inDays} days',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.grey,
-                          // fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      _dropsLeftWidget(),
-                    ],
-                  ),
-                  SizedBox(height: 8.h),
-                  dateInfoWidget()
-                ],
-              ),
-            ),
-            SizedBox(width: 20.w),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 8.h,
+        horizontal: 8.w,
       ),
-    ]);
+      margin: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 60.w,
+            height: 100.h,
+            decoration: BoxDecoration(
+              color: eyeDrop.color,
+              borderRadius: BorderRadius.all(
+                Radius.circular(20.r),
+              ),
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                eyeDrop.isActive ? AppAssets.waterDropSvg : AppAssets.pauseSvg,
+                height: 35.h,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(width: 20.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  eyeDrop.name,
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                // SizedBox(height: 4.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      eyeDrop.treatmentDuration.duration == null
+                          ? 'Outgoing Treatment'
+                          : 'Duration: ${eyeDrop.treatmentDuration.duration?.inDays} days',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey,
+                        // fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    _dropsLeftWidget(),
+                  ],
+                ),
+                // SizedBox(height: 8.h),
+                dateInfoWidget()
+              ],
+            ),
+          ),
+          SizedBox(width: 20.w),
+          const Icon(Icons.chevron_right),
+        ],
+      ),
+    );
   }
 
   Text _dropsLeftWidget() {
@@ -109,6 +107,8 @@ class EyeDropItemWidget extends StatelessWidget {
         color: Colors.grey,
         // fontWeight: FontWeight.w500,
       ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -133,11 +133,16 @@ class EyeDropItemWidget extends StatelessWidget {
       startingDateText = eyeDrop.treatmentDuration.startingDate!.yMMMdFormat;
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Wrap(
+      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         AppIconWithText(icon: Icons.calendar_month_rounded, text: daysLeftText),
-        Text(startingDateText, style: textStyle),
+        Text(
+          startingDateText,
+          style: textStyle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }

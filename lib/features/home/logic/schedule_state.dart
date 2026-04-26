@@ -5,20 +5,27 @@ class ScheduleState extends Equatable {
   final TimeOfDay? startingTime;
   final TimeOfDay? endingTime;
   final ScheduleModel? schedule;
+  final DateTime selectedDate;
+
   const ScheduleState({
     required this.eyeDropsList,
     required this.startingTime,
     required this.endingTime,
     required this.schedule,
+    required this.selectedDate,
   });
+
   factory ScheduleState.initial() {
-    return const ScheduleState(
-      schedule: ScheduleModel(items: []),
-      eyeDropsList: [],
-      endingTime: TimeOfDay(hour: 0, minute: 0),
-      startingTime: TimeOfDay(hour: 0, minute: 0),
+    final now = DateTime.now();
+    return ScheduleState(
+      schedule: const ScheduleModel(items: []),
+      eyeDropsList: const [],
+      startingTime: const TimeOfDay(hour: 9, minute: 0),
+      endingTime: const TimeOfDay(hour: 21, minute: 0),
+      selectedDate: DateTime(now.year, now.month, now.day),
     );
   }
+
   ScheduleState resetSchedule() {
     return copyWith(schedule: const ScheduleModel(items: []));
   }
@@ -31,17 +38,20 @@ class ScheduleState extends Equatable {
       startingTime.isNotNull &&
       endingTime.isNotNull &&
       eyeDropsList.isNotNullOrEmpty;
+
   ScheduleState copyWith({
     List<EyeDropModel>? eyeDropsList,
     TimeOfDay? startingTime,
     TimeOfDay? endingTime,
     ScheduleModel? schedule,
+    DateTime? selectedDate,
   }) {
     return ScheduleState(
       eyeDropsList: eyeDropsList ?? this.eyeDropsList,
       startingTime: startingTime ?? this.startingTime,
       endingTime: endingTime ?? this.endingTime,
       schedule: schedule ?? this.schedule,
+      selectedDate: selectedDate ?? this.selectedDate,
     );
   }
 
@@ -51,5 +61,6 @@ class ScheduleState extends Equatable {
         startingTime,
         endingTime,
         schedule,
+        selectedDate,
       ];
 }

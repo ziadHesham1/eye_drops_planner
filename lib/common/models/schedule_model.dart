@@ -70,7 +70,7 @@ class ScheduleModel extends Equatable {
   factory ScheduleModel.fromMap(Map<String, dynamic> map) {
     return ScheduleModel(
       items: List<ScheduleItemModel>.from(
-        (map['items'] as List<int>).map<ScheduleItemModel>(
+        (map['items'] as List<dynamic>).map<ScheduleItemModel>(
           (x) => ScheduleItemModel.fromMap(x as Map<String, dynamic>),
         ),
       ),

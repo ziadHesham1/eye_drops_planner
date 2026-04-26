@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:bill_planner/common/app_colors.dart';
 import 'package:bill_planner/features/new_eye_drop/data/models/treatment_duration_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -62,7 +63,14 @@ class EyeDropsCubit extends HydratedCubit<EyeDropsState> {
 
   @override
   EyeDropsState? fromJson(Map<String, dynamic> json) {
-    log('eye_drop_cubit >' 'from json > length = ${json['items'].length}');
+    final itemsList = json['items'] as List<dynamic>?;
+    log('eye_drop_cubit >' 'from json > length = ${itemsList?.length ?? 0}');
+
+    // If no saved data or empty list, use defaults
+    if (itemsList == null || itemsList.isEmpty) {
+      return EyeDropsState.initial();
+    }
+
     return EyeDropsState(
       eyeDropsListModel: EyeDropsListModel.fromMap(json),
       status: CubitStatus.success,

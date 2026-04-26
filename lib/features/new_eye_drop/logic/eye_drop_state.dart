@@ -13,10 +13,57 @@ class EyeDropsState extends Equatable {
   });
   factory EyeDropsState.initial() {
     return EyeDropsState(
-      eyeDropsListModel: EyeDropsListModel.empty(),
+      eyeDropsListModel: _createDefaultEyeDrops(),
       status: CubitStatus.initial,
     );
   }
+
+  static EyeDropsListModel _createDefaultEyeDrops() {
+    final List<EyeDropModel> defaults = [
+      EyeDropModel(
+        name: 'Tymer ED',
+        repetitions: 4,
+        color: AppColors.scheduleColorsList[0],
+        treatmentDuration: TreatmentDurationModel(
+          startingDate: DateTime.now(),
+          duration: const Duration(days: 30),
+          selectedDurationOption: DurationOptions.durationChoice,
+        ),
+      ),
+      EyeDropModel(
+        name: 'Dexaflox ED',
+        repetitions: 4,
+        color: AppColors.scheduleColorsList[1],
+        treatmentDuration: TreatmentDurationModel(
+          startingDate: DateTime.now(),
+          duration: const Duration(days: 30),
+          selectedDurationOption: DurationOptions.durationChoice,
+        ),
+      ),
+      EyeDropModel(
+        name: 'Trillerg ED',
+        repetitions: 3,
+        color: AppColors.scheduleColorsList[2],
+        treatmentDuration: TreatmentDurationModel(
+          startingDate: DateTime.now(),
+          duration: const Duration(days: 14),
+          selectedDurationOption: DurationOptions.durationChoice,
+        ),
+      ),
+      EyeDropModel(
+        name: 'Conjyclear Forte SDU',
+        repetitions: 3,
+        color: AppColors.scheduleColorsList[3],
+        treatmentDuration: TreatmentDurationModel(
+          startingDate: DateTime.now(),
+          duration: const Duration(days: 14),
+          selectedDurationOption: DurationOptions.durationChoice,
+        ),
+      ),
+    ];
+    return EyeDropsListModel(items: defaults);
+  }
+
   EyeDropsState loading() {
     return copyWith(
       status: CubitStatus.loading,

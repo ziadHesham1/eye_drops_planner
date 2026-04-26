@@ -1,22 +1,43 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+
+import '../../../common/helpers/extensions.dart';
 
 part 'settings_state.dart';
 
-class SettingsCubit extends Cubit<SettingsState> {
+class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit() : super(SettingsState.initial());
-  // late final TimePickerController statingTimeController =
-  //     TimePickerController(TimeOfDay.now());
-  // late final TimePickerController endingTimeController =
-  //     TimePickerController(TimeOfDay.now());
-  SettingsState onValuesUpdated({
+
+  void onValuesUpdated({
     TimeOfDay? startingTime,
     TimeOfDay? endingTime,
   }) {
-    return SettingsState(
+    emit(state.copyWith(
       startingTime: startingTime,
       endingTime: endingTime,
+    ));
+  }
+
+  @override
+  SettingsState? fromJson(Map<String, dynamic> json) {
+    final start = json['startingTime'];
+    final end = json['endingTime'];
+    return SettingsState(
+      startingTime: start is Map
+          ? TimeOfDayExtension.fromMap(Map<String, int>.from(start))
+          : null,
+      endingTime: end is Map
+          ? TimeOfDayExtension.fromMap(Map<String, int>.from(end))
+          : null,
     );
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SettingsState state) {
+    return {
+      'startingTime': state.startingTime?.toMap(),
+      'endingTime': state.endingTime?.toMap(),
+    };
   }
 }

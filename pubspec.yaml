@@ -19,8 +19,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
+  flutter_local_notifications: ^17.2.3
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.10+1
+  flutter_timezone: ^3.0.1
   freezed: ^2.5.2
   freezed_annotation: ^2.4.4
   hydrated_bloc: ^9.1.5
@@ -29,8 +31,11 @@ dependencies:
   json_serializable: ^6.8.0
   numberpicker: ^2.1.2
   path_provider: ^2.1.4
+  permission_handler: ^11.3.1
   persistent_bottom_nav_bar: ^6.2.1
+  rename: ^3.1.0
   timeline_tile: ^2.0.0
+  timezone: ^0.9.4
   tuple: ^2.0.2
 
 dev_dependencies:

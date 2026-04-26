@@ -9,8 +9,8 @@ class SettingsState extends Equatable {
   });
   factory SettingsState.initial() {
     return const SettingsState(
-      endingTime: TimeOfDay(hour: 8, minute: 0),
-      startingTime: TimeOfDay(hour: 24, minute: 0),
+      startingTime: TimeOfDay(hour: 9, minute: 0),
+      endingTime: TimeOfDay(hour: 21, minute: 0),
     );
   }
 
